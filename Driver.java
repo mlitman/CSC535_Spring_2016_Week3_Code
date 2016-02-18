@@ -4,52 +4,143 @@ public class Driver
 	//collection of methods
 	public static void main(String[] args)
 	{
-		String s = "hello";
-		String s2 = "elephant";
-		System.out.println(reverse(s2));
+		String exp = "124 + 18 - 2       * 13 / 17";
+		processExpression(exp);
 	}
 	
-	static String reverse(String s)
+	static int stringToInt(String s)
 	{
-		String answer = "";
+		int place = 1;
+		int sum = 0;
 		for(int i = s.length()-1; i >= 0; i--)
 		{
-			answer = answer + s.charAt(i);
+			sum = sum + (charToInt(s.charAt(i)) * place);
+			place = place * 10;
 		}
-		return answer;
+		return sum;
 	}
 	
-	static void printString(String s)
+	static int charToInt(char c)
 	{
+		return "0123456789".indexOf(c);
+	}
+	
+	static int doMath(String num1, String num2, char op)
+	{
+		int a = stringToInt(num1);
+		int b = stringToInt(num2);
+		
+		if(op == '+')
+		{
+			return a + b;
+		}
+		else if(op == '-')
+		{
+			return a - b;
+		}
+		else if(op == '*')
+		{
+			return a * b;
+		}
+		else
+		{
+			return a / b;
+		}
+	}
+	
+	static void processExpression(String exp)
+	{
+		System.out.println(parseExpression(exp));
+	}
+	
+	static int parseExpression(String exp)
+	{
+		String currNumber = "";
+		String leftOperand = "";
+		char op = '?';
+		for(int i = 0; i < exp.length(); i++)
+		{
+			if(isDigit(exp.charAt(i)))
+			{
+				currNumber = currNumber + exp.charAt(i);
+			}
+			else if(exp.charAt(i) == ' ')
+			{
+				continue;
+			}
+			else
+			{
+				if(op == '?')
+				{
+					op = exp.charAt(i);
+					leftOperand = currNumber;
+					currNumber = "";
+				}
+				else
+				{
+					//do the math, store the result in leftOperand, overwrite op with the new and zero out currNumber
+					leftOperand = "" + doMath(leftOperand, currNumber, op);
+					currNumber = "";
+					op = exp.charAt(i);
+				}
+			}
+		}
+		
+		if(currNumber.length() > 0)
+		{
+			if(op == '?')
+			{
+				return stringToInt(currNumber);
+			}
+			else
+			{
+				return doMath(leftOperand, currNumber, op);
+			}
+		}
+		else
+		{
+			return stringToInt(leftOperand);
+		}
+	}
+	
+	static boolean isDigit(char c)
+	{
+		return "0123456789".indexOf(c) != -1;
+	}
+	
+	static void printVowels(String s)
+	{
+		String map = "aeiouAEIOU";
 		for(int i = 0; i < s.length(); i++)
 		{
-			System.out.println(s.charAt(i));
+			if(map.indexOf(s.charAt(i)) != -1)
+			{
+				System.out.println(s.charAt(i));
+			}
 		}
 	}
 	
-	//if(boolean_expression) { collection of zero or more statements }
-	static int max(int num1, int num2)
+	static void printConsonants(String s)
 	{
-		if(num1 > num2) 
+		String map = "bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ";
+		for(int i = 0; i < s.length(); i++)
 		{
-			return num1;
+			if(map.indexOf(s.charAt(i)) != -1)
+			{
+				System.out.println(s.charAt(i));
+			}
 		}
-		return num2;
 	}
 	
-	static int addNums(int a, int b)
+	static void printDigits(String s)
 	{
-		return a - b;
-	}
-	
-	//method definition - this is an untapped resource!
-	static int factorial(int num)
-	{
-		int answer = 1;
-		for(int i = num; i >= 1; i--)
+		String map = "0123456789";
+		for(int i = 0; i < s.length(); i++)
 		{
-			answer = answer * i;
+			if(map.indexOf(s.charAt(i)) != -1)
+			{
+				System.out.println(s.charAt(i));
+			}
 		}
-		return answer;
 	}
 }
