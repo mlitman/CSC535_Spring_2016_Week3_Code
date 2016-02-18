@@ -4,143 +4,80 @@ public class Driver
 	//collection of methods
 	public static void main(String[] args)
 	{
-		String exp = "124 + 18 - 2       * 13 / 17";
-		processExpression(exp);
+		System.out.println(baseToDecimal("264",8));
+		System.out.println(baseToDecimal("101101",2));
+		System.out.println(baseToDecimal("237",10));
+		System.out.println(baseToDecimal("bad",16));
+		System.out.println(decimalToBase(45,2));
+		System.out.println(decimalToBase(180,8));
+		System.out.println(decimalToBase(237,10));
+		System.out.println(decimalToBase(2989,16));
 	}
 	
-	static int stringToInt(String s)
+	static char intToChar(int num)
 	{
-		int place = 1;
-		int sum = 0;
-		for(int i = s.length()-1; i >= 0; i--)
+		return "0123456789ABCDEF".charAt(num);
+	}
+	
+	static String decimalToBase(int val, int radix)
+	{
+		String answer = "";
+		while(val/radix != 0)
 		{
-			sum = sum + (charToInt(s.charAt(i)) * place);
-			place = place * 10;
+			answer = "" + intToChar(val%radix) + answer;
+			val /= radix;
 		}
-		return sum;
+		return "" + intToChar(val%radix) + answer;
+	}
+	
+	static String decimalToDecimal(int val)
+	{
+		String answer = "";
+		while(val/10 != 0)
+		{
+			answer = "" + (val%10) + answer;
+			val /= 10;
+		}
+		return "" + (val%10) + answer;
+	}
+	
+	static String decimalToOctal(int val)
+	{
+		String answer = "";
+		while(val/8 != 0)
+		{
+			answer = "" + (val%8) + answer;
+			val /= 8;
+		}
+		return "" + (val%8) + answer;
+	}
+	
+	static String decimalToBinary(int val)
+	{
+		String answer = "";
+		while(val/2 != 0)
+		{
+			answer = "" + (val%2) + answer;
+			val /= 2;
+		}
+		return "" + (val%2) + answer;
 	}
 	
 	static int charToInt(char c)
 	{
-		return "0123456789".indexOf(c);
+		return "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".indexOf(c);
 	}
 	
-	static int doMath(String num1, String num2, char op)
+	static int baseToDecimal(String val, int radix)
 	{
-		int a = stringToInt(num1);
-		int b = stringToInt(num2);
-		
-		if(op == '+')
+		val = val.toUpperCase();
+		int place = 1;
+		int sum = 0;
+		for(int i = val.length()-1; i >= 0; i--)
 		{
-			return a + b;
+			sum = sum + (charToInt(val.charAt(i)) * place);
+			place *= radix;
 		}
-		else if(op == '-')
-		{
-			return a - b;
-		}
-		else if(op == '*')
-		{
-			return a * b;
-		}
-		else
-		{
-			return a / b;
-		}
-	}
-	
-	static void processExpression(String exp)
-	{
-		System.out.println(parseExpression(exp));
-	}
-	
-	static int parseExpression(String exp)
-	{
-		String currNumber = "";
-		String leftOperand = "";
-		char op = '?';
-		for(int i = 0; i < exp.length(); i++)
-		{
-			if(isDigit(exp.charAt(i)))
-			{
-				currNumber = currNumber + exp.charAt(i);
-			}
-			else if(exp.charAt(i) == ' ')
-			{
-				continue;
-			}
-			else
-			{
-				if(op == '?')
-				{
-					op = exp.charAt(i);
-					leftOperand = currNumber;
-					currNumber = "";
-				}
-				else
-				{
-					//do the math, store the result in leftOperand, overwrite op with the new and zero out currNumber
-					leftOperand = "" + doMath(leftOperand, currNumber, op);
-					currNumber = "";
-					op = exp.charAt(i);
-				}
-			}
-		}
-		
-		if(currNumber.length() > 0)
-		{
-			if(op == '?')
-			{
-				return stringToInt(currNumber);
-			}
-			else
-			{
-				return doMath(leftOperand, currNumber, op);
-			}
-		}
-		else
-		{
-			return stringToInt(leftOperand);
-		}
-	}
-	
-	static boolean isDigit(char c)
-	{
-		return "0123456789".indexOf(c) != -1;
-	}
-	
-	static void printVowels(String s)
-	{
-		String map = "aeiouAEIOU";
-		for(int i = 0; i < s.length(); i++)
-		{
-			if(map.indexOf(s.charAt(i)) != -1)
-			{
-				System.out.println(s.charAt(i));
-			}
-		}
-	}
-	
-	static void printConsonants(String s)
-	{
-		String map = "bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ";
-		for(int i = 0; i < s.length(); i++)
-		{
-			if(map.indexOf(s.charAt(i)) != -1)
-			{
-				System.out.println(s.charAt(i));
-			}
-		}
-	}
-	
-	static void printDigits(String s)
-	{
-		String map = "0123456789";
-		for(int i = 0; i < s.length(); i++)
-		{
-			if(map.indexOf(s.charAt(i)) != -1)
-			{
-				System.out.println(s.charAt(i));
-			}
-		}
+		return sum;
 	}
 }
