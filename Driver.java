@@ -1,83 +1,90 @@
+import java.util.Random;
 
 public class Driver 
 {
 	//collection of methods
 	public static void main(String[] args)
 	{
-		System.out.println(baseToDecimal("264",8));
-		System.out.println(baseToDecimal("101101",2));
-		System.out.println(baseToDecimal("237",10));
-		System.out.println(baseToDecimal("bad",16));
-		System.out.println(decimalToBase(45,2));
-		System.out.println(decimalToBase(180,8));
-		System.out.println(decimalToBase(237,10));
-		System.out.println(decimalToBase(2989,16));
+		int[] ar = new int[20];
+		Driver.fillArray(ar);
+		printArray(ar, 0, ar.length-1);
+		Driver.mergeSort(ar, 0, ar.length-1);
+		printArray(ar, 0, ar.length-1);
 	}
 	
-	static char intToChar(int num)
+	static void mergeSort(int[] ar, int begin, int end)
 	{
-		return "0123456789ABCDEF".charAt(num);
-	}
-	
-	static String decimalToBase(int val, int radix)
-	{
-		String answer = "";
-		while(val/radix != 0)
+		if(begin != end)
 		{
-			answer = "" + intToChar(val%radix) + answer;
-			val /= radix;
+			int leftBegin = begin;
+			int leftEnd = (begin + end)/2;
+			int rightBegin = leftEnd + 1;
+			int rightEnd = end;
+			mergeSort(ar, leftBegin, leftEnd);
+			mergeSort(ar, rightBegin, rightEnd);
+			
+			//we have partially sorted lists
+			//leftBegin to leftEnd is sorted
+			//rightBegin to rightEnd is sorted
+			//merge step
+			int leftPos = leftBegin;
+			int rightPos = rightBegin;
+			int[] temp = new int[end-begin+1];
+			//fills temp up with the elements in ar from begin to end in the correct order
+			for(int i = 0; i < temp.length; i++)
+			{
+				if(leftPos > leftEnd)
+				{
+					temp[i] = ar[rightPos];
+					rightPos++;
+				}
+				else if(rightPos > rightEnd)
+				{
+					temp[i] = ar[leftPos];
+					leftPos++;
+				}
+				else
+				{
+					if(ar[leftPos] < ar[rightPos])
+					{
+						temp[i] = ar[leftPos];
+						leftPos++;
+					}
+					else
+					{
+						temp[i] = ar[rightPos];
+						rightPos++;
+					}
+				}
+			}
+			
+			//copy the contents of temp into buckets begin to end of ar
+			int pos = 0;
+			for(int i = begin; i <= end; i++)
+			{
+				ar[i] = temp[pos];
+				pos++;
+			}
 		}
-		return "" + intToChar(val%radix) + answer;
 	}
 	
-	static String decimalToDecimal(int val)
+	static void printArray(int[] ar, int begin, int end)
 	{
-		String answer = "";
-		while(val/10 != 0)
+		System.out.println("******");
+		for(int i = begin; i <= end; i++)
 		{
-			answer = "" + (val%10) + answer;
-			val /= 10;
+			System.out.print(ar[i] + "\t");
 		}
-		return "" + (val%10) + answer;
+		System.out.println("");
 	}
 	
-	static String decimalToOctal(int val)
+	static void fillArray(int[] ar)
 	{
-		String answer = "";
-		while(val/8 != 0)
+		Random r = new Random();
+		for(int i = 0; i < ar.length; i++)
 		{
-			answer = "" + (val%8) + answer;
-			val /= 8;
+			ar[i] = r.nextInt(100);
 		}
-		return "" + (val%8) + answer;
 	}
 	
-	static String decimalToBinary(int val)
-	{
-		String answer = "";
-		while(val/2 != 0)
-		{
-			answer = "" + (val%2) + answer;
-			val /= 2;
-		}
-		return "" + (val%2) + answer;
-	}
-	
-	static int charToInt(char c)
-	{
-		return "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".indexOf(c);
-	}
-	
-	static int baseToDecimal(String val, int radix)
-	{
-		val = val.toUpperCase();
-		int place = 1;
-		int sum = 0;
-		for(int i = val.length()-1; i >= 0; i--)
-		{
-			sum = sum + (charToInt(val.charAt(i)) * place);
-			place *= radix;
-		}
-		return sum;
-	}
 }
